@@ -1,23 +1,21 @@
-# Use Node.js 16 slim as the base image
-FROM --platform=linux/arm64 node:18
 
-# Set the working directory
+# Use Node.js 18 for arm64
+FROM node:18
+
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy package files
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --verbose
 
-# Copy the rest of the application code
+# Copy app code
 COPY . .
 
-# Build the React app
-RUN npm run build
+# Expose port
+EXPOSE 3000
 
-# Expose port 2210 (or the port your app is configured to listen on)
-EXPOSE 2210
-
-# Start your Node.js server (assuming it serves the React app)  
-CMD ["npm", "start"]
+# Start app
+CMD ["node", "app.js"]
