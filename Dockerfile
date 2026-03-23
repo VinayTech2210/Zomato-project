@@ -1,21 +1,14 @@
-
-# Use Node.js 18 for arm64
-FROM node:18
-
-# Set working directory
+FROM --platform=linux/arm64 node:18
 WORKDIR /app
 
-# Copy package files
+# Copy package.json first for caching
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install --verbose
 
-# Copy app code
+# Copy rest of code
 COPY . .
 
-# Expose port
 EXPOSE 3000
-
-# Start app
-CMD ["node", "app.js"]
+CMD ["npm", "start"]
