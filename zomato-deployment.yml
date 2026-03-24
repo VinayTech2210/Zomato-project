@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: zomato-app
+   labels:
+     app: zomato
+     author: vinay
+spec:
+  replicas: 2
+  selector:
+     matchLabels:
+        app: zomato
+  template:
+     metadata:
+        name: zomato-pod
+        labels:
+           app: zomato
+     spec:
+       containers:
+          - name: zomato-container
+            image: vinnu2211/zomato3:amd64
+            ports:
+              - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: zomato-ip
+    labels:
+       app: zomato
+spec:
+  type: LoadBalancer
+  selector:
+     app: zomato
+  ports:
+   - targetPort: 80
+     port: 3998
+...
