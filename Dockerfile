@@ -1,14 +1,26 @@
-FROM --platform=linux/amd64 node:18
+# Stage 1: Build the React app
+FROM node:18 as build
+
 WORKDIR /app
 
-# Copy package.json first for caching
+# Copy package files and install dependencies
 COPY package*.json ./
+RUN npm install
 
-# Install dependencies
-RUN npm install --verbose
-
-# Copy the rest of the app
+# Copy the rest of the source code
 COPY . .
 
-EXPOSE 3000
-CMD ["npm", "start"]
+# Build the React app
+RUN npm run build
+
+# Stage 2: Serve with nginx
+FROM nginx:stable-alpine
+
+# Copy the build output to nginx html folder
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
